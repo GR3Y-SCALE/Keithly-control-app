@@ -1,16 +1,14 @@
 name: CI
 
-on:
-  push:
-    branches [ main ]
-  pull request:
-    branches [ main ]
+on: [push]
 
 jobs:
+
   build:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout out repo
@@ -30,7 +28,7 @@ jobs:
         run: |
           pyinstaller main.py --name keithly --icon icon/keithly.ico --hidden-import pyvisa_py
       - name: Upload artifact
-        uses:
+        uses: actions/upload-artifact@v1
         with:
           name: keithly-${{ matrix.os }}
           path: dist/
