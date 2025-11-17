@@ -28,7 +28,7 @@ jobs:
         run: |
           pyinstaller main.py --name keithly --icon icon/keithly.ico --hidden-import pyvisa_py
       - name: Upload artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: keithly-${{ matrix.os }}
           path: dist/
