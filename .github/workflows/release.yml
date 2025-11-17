@@ -28,7 +28,7 @@ jobs:
           pyinstaller main.py --onefile --name keithly --icon icon/keithly.ico --hidden-import pyvisa_py -y
       - name: List dist contents
         run: |
-          ls -la
+          ls -la dist
 
       - name: Rename artifact per OS
         run: |
