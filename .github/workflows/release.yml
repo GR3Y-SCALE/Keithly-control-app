@@ -30,18 +30,18 @@ jobs:
         run: |
           ls -la dist
 
-      - name: Rename artifact per OS
-        run: |
-          APP_NAME="keithly"
-          case "${{ matrix.os }}" in 
-            ubuntu-latest)
-              mv "dist/${APP_NAME}.app" "dist/${APP_NAME}-linux"
-              ;;
-            macos-latest)
-              mv "dist/$APP_NAME" "dist/${APP_NAME}-macos"
-              ;;
-            windows-latest)
-              mv "dist/${APP_NAME}.exe" "dist/${APP_NAME}-windows.exe"
+          #- name: Rename artifact per OS
+          #run: |
+          #APP_NAME="keithly"
+          #case "${{ matrix.os }}" in 
+          # ubuntu-latest)
+          #    mv "dist/${APP_NAME}" "dist/${APP_NAME}-linux"
+          #    ;;
+          #  macos-latest)
+          #    mv "dist/$APP_NAME" "dist/${APP_NAME}-macos"
+          #    ;;
+          #  windows-latest)
+          #    mv "dist/${APP_NAME}.exe" "dist/${APP_NAME}-windows.exe"
 
       - name: Create Githug Release and upload assets
         uses: softprops/action-gh-release@v2
