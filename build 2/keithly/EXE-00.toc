@@ -1,0 +1,81 @@
+('/Users/mauriceblake/Documents/2025/work/QUT '
+ 'VRES/Keithly-control-app/build/keithly/keithly',
+ False,
+ False,
+ True,
+ None,
+ None,
+ False,
+ False,
+ None,
+ True,
+ False,
+ 'arm64',
+ None,
+ None,
+ '/Users/mauriceblake/Documents/2025/work/QUT '
+ 'VRES/Keithly-control-app/build/keithly/keithly.pkg',
+ [('pyi-contents-directory _internal', '', 'OPTION'),
+  ('PYZ-00.pyz',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/build/keithly/PYZ-00.pyz',
+   'PYZ'),
+  ('python3.13/lib-dynload/_struct.cpython-313-darwin.so',
+   '/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/lib-dynload/_struct.cpython-313-darwin.so',
+   'EXTENSION'),
+  ('python3.13/lib-dynload/zlib.cpython-313-darwin.so',
+   '/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/lib-dynload/zlib.cpython-313-darwin.so',
+   'EXTENSION'),
+  ('struct',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/build/keithly/localpycs/struct.pyc',
+   'PYMODULE'),
+  ('pyimod01_archive',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/build/keithly/localpycs/pyimod01_archive.pyc',
+   'PYMODULE'),
+  ('pyimod02_importers',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/build/keithly/localpycs/pyimod02_importers.pyc',
+   'PYMODULE'),
+  ('pyimod03_ctypes',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/build/keithly/localpycs/pyimod03_ctypes.pyc',
+   'PYMODULE'),
+  ('pyiboot01_bootstrap',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/venv/lib/python3.13/site-packages/PyInstaller/loader/pyiboot01_bootstrap.py',
+   'PYSOURCE'),
+  ('pyi_rth_inspect',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/venv/lib/python3.13/site-packages/PyInstaller/hooks/rthooks/pyi_rth_inspect.py',
+   'PYSOURCE'),
+  ('pyi_rth_pyqt5',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/venv/lib/python3.13/site-packages/PyInstaller/hooks/rthooks/pyi_rth_pyqt5.py',
+   'PYSOURCE'),
+  ('pyi_rth_pkgutil',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/venv/lib/python3.13/site-packages/PyInstaller/hooks/rthooks/pyi_rth_pkgutil.py',
+   'PYSOURCE'),
+  ('pyi_rth_multiprocessing',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/venv/lib/python3.13/site-packages/PyInstaller/hooks/rthooks/pyi_rth_multiprocessing.py',
+   'PYSOURCE'),
+  ('pyi_rth_mplconfig',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/venv/lib/python3.13/site-packages/PyInstaller/hooks/rthooks/pyi_rth_mplconfig.py',
+   'PYSOURCE'),
+  ('main',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/main.py',
+   'PYSOURCE')],
+ [],
+ False,
+ False,
+ 1763355366,
+ [('runw',
+   '/Users/mauriceblake/Documents/2025/work/QUT '
+   'VRES/Keithly-control-app/venv/lib/python3.13/site-packages/PyInstaller/bootloader/Darwin-64bit/runw',
+   'EXECUTABLE')],
+ '/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Python')

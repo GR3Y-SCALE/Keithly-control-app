@@ -6,12 +6,15 @@
 
 
 -------- PARAMETERS --------
-Vchan = -50
+Vds = 0.1
 
-VgStart = -100
-VgEnd = 100
+VgStart = -60
+VgEnd = 60
 VgStep = 1
 
+----- Device configuration -----
+-- smua is gate 
+-- smub is drain-source
 
 -------- MAIN PROGRAM --------
 reset()
@@ -21,70 +24,77 @@ display.clear()
 beeper.beep(1, 600)
 
 -- Clear buffers
-smua.nvbuffer1.clear()
 smub.nvbuffer1.clear()
+smua.nvbuffer1.clear()
 -- Prepare buffers
-smua.nvbuffer1.collectsourcevalues = 1
 smub.nvbuffer1.collectsourcevalues = 1
+smua.nvbuffer1.collectsourcevalues = 1
 format.data = format.ASCII
-smua.nvbuffer1.appendmode = 1
 smub.nvbuffer1.appendmode = 1
-smua.measure.count = 1
+smua.nvbuffer1.appendmode = 1
 smub.measure.count = 1
+smua.measure.count = 1
 
--- SMUA setup
-smua.measure.delayfactor = 1.0
-smua.measure.nplc = 10
-smua.source.func = smua.OUTPUT_DCVOLTS
-smua.sense = smua.SENSE_LOCAL
-smua.source.autorangev = smua.AUTORANGE_ON
-smua.source.limiti = 10e-5
-smua.measure.rangei = 10e-5
-
--- SMUB setup
+-- smub setup
 smub.measure.delayfactor = 1.0
 smub.measure.nplc = 10
 smub.source.func = smub.OUTPUT_DCVOLTS
-smub.source.limiti = 10e-8
+smub.sense = smub.SENSE_LOCAL
+smub.source.autorangev = smub.AUTORANGE_ON
+smub.source.limiti = 10e-5
+smub.measure.rangei = 10e-5
+
+-- smua setup
+smua.measure.delayfactor = 1.0
+smua.measure.nplc = 10
+smua.source.func = smua.OUTPUT_DCVOLTS
+smua.source.limiti = 10e-8
 
 --DISPLAY settings
-display.smua.measure.func = display.MEASURE_DCAMPS
 display.smub.measure.func = display.MEASURE_DCAMPS
-display.screen = display.SMUA_SMUB
+display.smua.measure.func = display.MEASURE_DCAMPS
+display.screen = display.smub_smua
 
 -- MEASUREMENT ROUTINE
 
-smua.source.levelv = Vchan
+smub.source.levelv = Vds -- smub is fixed voltage
+smub.source.output = smub.OUTPUT_ON
+
+-- slow ramp to starting voltage
+smua.source.levelv = 0
 smua.source.output = smua.OUTPUT_ON
+while I >= VgStart do
+    I = I - 1
+    smua.source.levelv = I
+    delay(0.1)
+end
 
 Vg = VgStart
-smub.source.levelv = Vg
-smub.source.output = smub.OUTPUT_ON
-delay(3)
+delay(3) -- wait for things to settle before starting the full sweep
 
 -- Forward Vg scan
 if VgStart < VgEnd then
     while Vg <= VgEnd do
-        smub.source.levelv = Vg
-        smub.source.output = smub.OUTPUT_ON
+        smua.source.levelv = Vg
+        smua.source.output = smua.OUTPUT_ON
         delay(0.2)
-        smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
+        smua.measure.i(smua.nvbuffer1)
 
-        smub.source.output = smub.OUTPUT_OFF
+        smua.source.output = smua.OUTPUT_OFF
         Vg = Vg + VgStep
     end
 
 -- Reverse scan
 elseif VgStart > VgEnd then
     while Vg >= VgEnd do
-        smub.source.levelv = Vg
-        smub.source.output = smub.OUTPUT_ON
+        smua.source.levelv = Vg
+        smua.source.output = smua.OUTPUT_ON
         delay(0.2)
-        smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
+        smua.measure.i(smua.nvbuffer1)
 
-        smub.source.output = smub.OUTPUT_OFF
+        smua.source.output = smua.OUTPUT_OFF
         Vg = Vg - VgStep
     end
 
@@ -92,7 +102,7 @@ else
     error("Invalid sweep parameters.")
 end
 
-smua.source.output = smua.OUTPUT_OFF
 smub.source.output = smub.OUTPUT_OFF
+smua.source.output = smua.OUTPUT_OFF
 waitcomplete()
 -------- END --------

@@ -8,7 +8,7 @@
 -------- PARAMETERS --------
 Vstart = -50
 Vend = 50
-Vstep = 2
+Vstep = 0.5
 
 
 -------- MAIN PROGRAM --------
@@ -50,6 +50,8 @@ V = Vstart
 smua.source.output = smua.OUTPUT_ON
 smua.source.levelv = V
 delay(1)
+
+-- Slow ramp to the starting voltage range
 
 -- forwards scan direction
 if Vstart < Vend then
