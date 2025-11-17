@@ -1,0 +1,51 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  build-and-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Setup python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build with PyInstaller
+        run:
+          pyinstaller main.py --onefile --name keithly --icon icon/keithly.ico --hidden-import pyvisa_py
+      - name: List dist contents
+        run: |
+          ls -la
+
+      - name: Rename artifact per OS
+        run: |
+          APP_NAME="keithly"
+          case "${{ matrix.os }}" in 
+            ubuntu-latest)
+              mv "dist/$APP_NAME" "dist/${APP_NAME}-linux"
+              ;;
+            macos-latest)
+              mv "dist/$APP_NAME" "dist/${APP_NAME}-macos"
+              ;;
+            windows-latest)
+              mv "dist/${APP_NAME}.exe" "dist/${APP_NAME}-windows.exe"
+
+      - name: Create Githug Release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
