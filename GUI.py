@@ -129,7 +129,7 @@ class mainWindow(QMainWindow):
         # Window setup
         self.resize(800, 800)
         self.centre()
-        self.setWindowTitle('K2636 - OFET Measurements')
+        self.setWindowTitle('K2636 Control Application')
         self.show()
 
     def testKeithleyConnection(self):
