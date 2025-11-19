@@ -62,8 +62,8 @@ class mainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.dockConsole)
         self.stdout_stream = EmittingStream()
         self.stdout_stream.text_written.connect(self.console.console.append)
-        sys.stdout = self.stdout_stream
-        sys.stderr = self.stdout_stream
+        # sys.stdout = self.stdout_stream
+        # sys.stderr = self.stdout_stream
 
 
         # Matplotlib control widget
@@ -157,7 +157,7 @@ class mainWindow(QMainWindow):
         fname = QFileDialog.getOpenFileName(self, 'Open file', filter=filt1)
         if fname[0]:
             try:
-                df = pd.read_csv(fname[0], '\t')
+                df = pd.read_csv(fname[0], sep='\t')
                 if fnmatch.fnmatch(fname[0], '*transfer.csv'):
                     self.mainWidget.drawTransfer(df)
                 else:

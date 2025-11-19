@@ -28,7 +28,7 @@ class K2636():
     def makeConnection(self, rm, address, read_term, baudrate):
         try:
             if any(x in str(address) for x in ('ttyS', 'ttyUSB', 'USB')):
-                self.inst = rm.open_resource(address)
+                self.inst = rm.open_resource('USB0::1510::9782::4399155\x00::0::INSTR')
                 self.inst.read_termination = str(read_term)
                 self.inst.baud_rate = baudrate
             else:
@@ -167,11 +167,11 @@ class K2636():
             df.to_csv(output_name, sep='\t', index=False)
 
             # transfer reverse scan
-            self.loadTSP('transfer-charact-2.tsp')
-            self.runTSP()
-            df = self.readBuffer()
-            output_name = str(sample + '-pos-neg-transfer.csv')
-            df.to_csv(output_name, sep='\t', index=False)
+            # self.loadTSP('transfer-charact-2.tsp')
+            # self.runTSP()
+            # df = self.readBuffer()
+            # output_name = str(sample + '-pos-neg-transfer.csv')
+            # df.to_csv(output_name, sep='\t', index=False)
 
             finish_time = time.time()
             print('Transfer curves measured. Elapsed time %.2f mins.'

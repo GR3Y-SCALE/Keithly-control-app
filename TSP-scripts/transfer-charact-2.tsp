@@ -6,10 +6,10 @@
 
 
 -------- PARAMETERS --------
-Vchan = -50
+Vchan = -1
 
-VgStart = 100
-VgEnd = -100
+VgStart = 20
+VgEnd = -20
 VgStep = 1
 
 
