@@ -27,6 +27,15 @@
     },
     "Lua.workspace.library": [
         "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.3.1-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/tsp-lua-5.0",
+        "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.3.1-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/2450/Helper",
+        "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.3.1-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/2450/AllTspCommands",
         "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.3.1-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/nodes_definitions"
+    ],
+    "tsp.tspLinkSystemConfigurations": [
+        {
+            "name": "keithly2636",
+            "localNode": "2450",
+            "isActive": true
+        }
     ]
 }

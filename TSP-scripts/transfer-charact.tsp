@@ -6,10 +6,10 @@
 
 
 -------- PARAMETERS --------
-Vds = 0.5
+Vds = 0.2
 
-VgStart = -40
-VgEnd = 40
+VgStart = -60
+VgEnd = 60
 VgStep = 1
 
 ----- Device configuration -----
@@ -39,9 +39,11 @@ smua.measure.count = 1
 -- smua setup -- Gate control
 smua.measure.delayfactor = 0.05
 smua.measure.nplc = 5 -- integration time
-smua.measure.rangei = 1e-8 -- current measurement range
+-- smua.measure.rangei = 1e-8 -- current measurement range
+smua.measure.autorangei = smua.AUTORANGE_ON
 smua.source.func = smua.OUTPUT_DCVOLTS
 smua.source.limiti = 1e-8
+smua.sense = smua.SENSE_LOCAL
 smua.source.autorangev = smua.AUTORANGE_ON -- auto range for v source
 
 -- smub setup
@@ -51,8 +53,8 @@ smub.source.func = smub.OUTPUT_DCVOLTS
 smub.sense = smub.SENSE_LOCAL
 smub.source.autorangev = smub.AUTORANGE_ON
 smub.measure.autorangei = smub.AUTORANGE_ON -- auto range for current measuerment
-smub.source.limiti = 8e-5 -- compliance for current
-smub.measure.rangei = 10e-5
+smub.source.limiti = 1e-5 -- compliance for current
+-- smub.measure.rangei = 10e-5
 
 
 --DISPLAY settings
@@ -65,29 +67,29 @@ display.screen = display.SMUA_SMUB
 smub.source.levelv = Vds -- smub is fixed voltage
 smub.source.output = smub.OUTPUT_ON
 
--- slow ramp to starting voltage -- Not working, I needs to ne initialised
+-- slow ramp to starting voltage
 smua.source.levelv = 0
 smua.source.output = smua.OUTPUT_ON
-I = 0
-while I > VgStart do
-    I = I - 1
-    smua.source.levelv = I
-    delay(0.05)
+Vg = 0
+while Vg > VgStart do
+    Vg = Vg - 1
+    smua.source.levelv = Vg
+    delay(0.005)
 end
 
 Vg = VgStart
-delay(3) -- wait for things to settle before starting the full sweep
+delay(1) -- wait for things to settle before starting the full sweep
 
 -- Forward Vg scan
 if VgStart < VgEnd then
     while Vg <= VgEnd do
         smua.source.levelv = Vg
-        smua.source.output = smua.OUTPUT_ON
-        delay(0.3)
-        smub.measure.i(smub.nvbuffer1)
+        -- smua.source.output = smua.OUTPUT_ON
+        delay(0.05)
         smua.measure.i(smua.nvbuffer1)
+        smub.measure.i(smub.nvbuffer1)
 
-        smua.source.output = smua.OUTPUT_OFF
+        -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg + VgStep
     end
 
@@ -95,12 +97,12 @@ if VgStart < VgEnd then
 elseif VgStart > VgEnd then
     while Vg >= VgEnd do
         smua.source.levelv = Vg
-        smua.source.output = smua.OUTPUT_ON
-        delay(0.3)
-        smub.measure.i(smub.nvbuffer1)
+        -- smua.source.output = smua.OUTPUT_ON
+        delay(0.05)
         smua.measure.i(smua.nvbuffer1)
+        smub.measure.i(smub.nvbuffer1)
 
-        smua.source.output = smua.OUTPUT_OFF
+        -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg - VgStep
     end
 

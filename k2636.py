@@ -100,13 +100,13 @@ class K2636():
         """Read buffer in memory and return an array."""
         try:
             vg = [float(x) for x in self._query('printbuffer' +
-                  '(1, smub.nvbuffer1.n, smub.nvbuffer1.sourcevalues)').split(',')]
-            ig = [float(x) for x in self._query('printbuffer' +
-                  '(1, smub.nvbuffer1.n, smub.nvbuffer1.readings)').split(',')]
-            vd = [float(x) for x in self._query('printbuffer' +
                   '(1, smua.nvbuffer1.n, smua.nvbuffer1.sourcevalues)').split(',')]
+            ig = [float(x) for x in self._query('printbuffer' +
+                  '(1, smua.nvbuffer1.n, smua.nvbuffer1.readings)').split(',')]
+            vd = [float(x) for x in self._query('printbuffer' +
+                  '(1, smub.nvbuffer1.n, smub.nvbuffer1.sourcevalues)').split(',')]
             c = [float(x) for x in self._query('printbuffer' +
-                 '(1, smua.nvbuffer1.n, smua.nvbuffer1.readings)').split(',')]
+                 '(1, smub.nvbuffer1.n, smub.nvbuffer1.readings)').split(',')]
 
             df = pd.DataFrame({'Gate Voltage [V]': vg,
                                'Channel Voltage [V]': vd,
@@ -167,11 +167,11 @@ class K2636():
             df.to_csv(output_name, sep='\t', index=False)
 
             # transfer reverse scan
-            # self.loadTSP('transfer-charact-2.tsp')
-            # self.runTSP()
-            # df = self.readBuffer()
-            # output_name = str(sample + '-pos-neg-transfer.csv')
-            # df.to_csv(output_name, sep='\t', index=False)
+            self.loadTSP('transfer-charact-2.tsp')
+            self.runTSP()
+            df = self.readBuffer()
+            output_name = str(sample + '-pos-neg-transfer.csv')
+            df.to_csv(output_name, sep='\t', index=False)
 
             finish_time = time.time()
             print('Transfer curves measured. Elapsed time %.2f mins.'

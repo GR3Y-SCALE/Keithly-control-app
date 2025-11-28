@@ -65,6 +65,7 @@ class GUI(GUI.mainWindow):
             # TRANSFER graph display
             if self.params['Measurement'] == 'transfer':
                 df = pd.read_csv(f"{self.params['Sample name']}-neg-pos-{self.params['Measurement']}.csv", sep='\t')
+                self.mainWidget.clear()
                 self.mainWidget.drawTransfer(df)
 
         except FileNotFoundError:
