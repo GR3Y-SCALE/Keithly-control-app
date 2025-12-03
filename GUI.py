@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (QMainWindow, QDockWidget, QWidget, QDesktopWidget,
                              QApplication, QGridLayout, QPushButton, QLabel,
                              QDoubleSpinBox, QAction, qApp, QSizePolicy,
                              QTextEdit, QFileDialog, QInputDialog, QLineEdit,
-                             QMessageBox)
+                             QMessageBox, QComboBox)
 
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -62,8 +62,8 @@ class mainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.dockConsole)
         self.stdout_stream = EmittingStream()
         self.stdout_stream.text_written.connect(self.console.console.append)
-        # sys.stdout = self.stdout_stream
-        # sys.stderr = self.stdout_stream
+        sys.stdout = self.stdout_stream
+        sys.stderr = self.stdout_stream
 
 
         # Matplotlib control widget

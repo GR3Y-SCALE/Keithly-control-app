@@ -28,14 +28,14 @@ class K2636():
     def makeConnection(self, rm, address, read_term, baudrate):
         try:
             if any(x in str(address) for x in ('ttyS', 'ttyUSB', 'USB')):
-                self.inst = rm.open_resource('USB0::1510::9782::4399155\x00::0::INSTR')
+                self.inst = rm.open_resource(config.ADDRESS)
                 self.inst.read_termination = str(read_term)
                 self.inst.baud_rate = baudrate
             else:
                 raise ConnectionError("Unsupported address: {}".format(address))
-        except (serial.SerialException, visa.VisaIOError) as e:
-            print("CONNECTION ERROR: Check instrument address.", e)
-            raise ConnectionError from e
+        except:
+            print("CONNECTION ERROR: Check instrument address.")
+            raise ConnectionError
 
     def closeConnection(self):
         """Close connection to keithley."""

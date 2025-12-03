@@ -84,7 +84,6 @@ delay(0.5)
 if VgStart < VgEnd then
     while Vg <= VgEnd do
         smua.source.levelv = Vg
-        delay(0.02)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
 
@@ -95,7 +94,6 @@ if VgStart < VgEnd then
 elseif VgStart > VgEnd then
     while Vg >= VgEnd do
         smua.source.levelv = Vg
-        delay(0.02)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
         Vg = Vg - VgStep

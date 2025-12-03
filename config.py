@@ -1,4 +1,4 @@
-ADDRESS = 'ASRL/dev/USB0'
+ADDRESS = 'USB0::1510::9782::4399155\x00::0::INSTR'
 
 TSP_DIR = 'TSP-scripts/'
 

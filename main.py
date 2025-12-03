@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-OFET measurement main program linking gui and measurement thread.
+main program linking gui and measurement thread.
 
 Author:  Ross <peregrine dot warren at physics dot ox dot ac dot uk>
          Maurice <maurice.townsendblake@qut.edu.au>
 
 """
 
-import GUI  # GUI
-import k2636  # driver
+import GUI
+import k2636  # driver for keithly
 import sys
 import time
 import pandas as pd
@@ -63,7 +63,7 @@ class GUI(GUI.mainWindow):
         """Display the data on screen."""
         try:
             # TRANSFER graph display
-            if self.params['Measurement'] == 'transfer':
+            if self.params['Measurement'] == 'transfer': #TODO: Add functionality to read both forward and reverse transfer graphs
                 df = pd.read_csv(f"{self.params['Sample name']}-neg-pos-{self.params['Measurement']}.csv", sep='\t')
                 self.mainWidget.clear()
                 self.mainWidget.drawTransfer(df)

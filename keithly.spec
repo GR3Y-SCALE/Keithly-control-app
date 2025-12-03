@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('TSP-scripts', 'TSP-scripts')],
     hiddenimports=[
         'pyvisa_py'
     ],
@@ -34,7 +34,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    onefile=True
+    onefile=False
 )
 coll = COLLECT(
     exe,
