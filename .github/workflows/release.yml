@@ -27,7 +27,7 @@ jobs:
 
       - name: Build with PyInstaller
         run:
-          pyinstaller main.py --onefile --name keithly --icon icon/keithly.ico --hidden-import pyvisa_py -y
+          pyinstaller keithly.spec -y
           #- name: List dist contents
           #run: |
           #ls -la dist
