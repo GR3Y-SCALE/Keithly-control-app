@@ -88,7 +88,7 @@ if VgStart < VgEnd then
         -- delay(0.05)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-	print("@@ " + smua.measure.i + " | " + smub.measure.i)
+	print("@@ " .. smua.measure.i .. " | " .. smub.measure.i)
 
         -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg + VgStep
@@ -102,7 +102,7 @@ elseif VgStart > VgEnd then
         -- delay(0.05)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-	print("@@ " + smua.measure.i + " | " + smub.measure.i)
+	print("@@ " .. smua.measure.i + " | " .. smub.measure.i)
 
 
         -- smua.source.output = smua.OUTPUT_OFF
@@ -116,4 +116,5 @@ end
 smub.source.output = smub.OUTPUT_OFF
 smua.source.output = smua.OUTPUT_OFF
 waitcomplete()
+print("EE")
 -------- END --------
