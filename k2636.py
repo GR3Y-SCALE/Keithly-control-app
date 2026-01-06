@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.style as style
 import time
 import serial
+import platform
 
 import config # Used for parameters
 
@@ -19,7 +20,18 @@ class K2636():
     def __init__(self, address=None, read_term='\n',
                  baudrate=57600):
         """Make instrument connection instantly on calling class."""
-        rm = visa.ResourceManager('@py')
+        if platform.system() == "Windows":
+            try:
+                rm = visa.ResourceManager() # Pyvisa backend cannot be used, NI-VISA is used instead
+                #self.inst.timeout = 500000 # Backend times out inbetween sweeps, need to fix as it is specific to NI-VISA
+            except:
+                raise ConnectionError("Cannot find VISA backend on Windows.")
+        else:
+            try:
+                 rm = visa.ResourceManager('@py')
+            except:
+                raise ConnectionError("Cannot find PY-VISA backend on this machine")
+
         # Read address from device config
         if address is None:
             address = config.ADDRESS
@@ -31,6 +43,7 @@ class K2636():
                 self.inst = rm.open_resource(config.ADDRESS)
                 self.inst.read_termination = str(read_term)
                 self.inst.baud_rate = baudrate
+                #self.inst.timeout = 500000
             else:
                 raise ConnectionError("Unsupported address: {}".format(address))
         except:
@@ -162,6 +175,8 @@ class K2636():
             begin_time = time.time()
             self.loadTSP('transfer-charact.tsp')
             self.runTSP()
+            while int(self._query('*STB?')) & 0x01 == 0: # Wait for status byte
+                time.sleep(0.25)
             df = self.readBuffer()
             output_name = str(sample + '-neg-pos-transfer.csv')
             df.to_csv(output_name, sep='\t', index=False)

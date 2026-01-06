@@ -62,8 +62,8 @@ class mainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.dockConsole)
         self.stdout_stream = EmittingStream()
         self.stdout_stream.text_written.connect(self.console.console.append)
-        sys.stdout = self.stdout_stream
-        sys.stderr = self.stdout_stream
+        #sys.stdout = self.stdout_stream
+        #sys.stderr = self.stdout_stream
 
 
         # Matplotlib control widget
