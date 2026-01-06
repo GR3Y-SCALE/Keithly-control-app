@@ -176,12 +176,11 @@ class K2636():
             self.loadTSP('transfer-charact.tsp')
             self.runTSP()
             while True:
-                stb = int(self._query('*STB?')) # status MAV bit in ESR
-                if stb & 0x10:
-                    line = self.inst.read() # read single line printed from keithly
+                line = self.inst.read() # read single line printed from keithly
+                if line[:2] == "@@": # Realtime data sent by keithly
                     print("Received: " + line)
-                elif stb & 0x01:
-                    break # sweep complete
+                elif line[:2] == "EE": # Terminating characters
+                    break
             df = self.readBuffer()
             output_name = str(sample + '-neg-pos-transfer.csv')
             df.to_csv(output_name, sep='\t', index=False)
