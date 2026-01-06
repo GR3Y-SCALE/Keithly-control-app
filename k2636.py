@@ -175,8 +175,9 @@ class K2636():
             begin_time = time.time()
             self.loadTSP('transfer-charact.tsp')
             self.runTSP()
-            while int(self._query('*STB?')) & 0x01 == 0: # Wait for status byte
-                time.sleep(0.25)
+            while int(self._query('*STB?')) & 0x01 == 0: # Wait for status byte in ESR
+                line = self.inst.read() # read single line printed from keithly
+                print("Received: " + line)
             df = self.readBuffer()
             output_name = str(sample + '-neg-pos-transfer.csv')
             df.to_csv(output_name, sep='\t', index=False)

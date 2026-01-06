@@ -88,6 +88,7 @@ if VgStart < VgEnd then
         -- delay(0.05)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
+	print("Testing testing testing")
 
         -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg + VgStep
@@ -101,6 +102,7 @@ elseif VgStart > VgEnd then
         -- delay(0.05)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
+	print("Testing testing testing")
 
         -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg - VgStep
