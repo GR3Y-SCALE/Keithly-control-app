@@ -89,7 +89,7 @@ if VgStart < VgEnd then
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
 	    if math.mod(math.floor(Vg + 0.5), 10) == 0 then
-            print("@@," .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
+            print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
         end
         
 
@@ -106,7 +106,7 @@ elseif VgStart > VgEnd then
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
         if math.mod(math.floor(Vg + 0.5), 10) == 0 then
-            print("@@," .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
+            print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
         end
         
 

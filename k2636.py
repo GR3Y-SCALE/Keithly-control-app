@@ -168,11 +168,21 @@ class K2636():
             begin_time = time.time()
             self.loadTSP('transfer-charact.tsp')
             self.runTSP()
+            if isinstance(df2, pd.DataFrame):
+                del df2
+            df2 = pd.DataFrame({'Gate Voltage [V]': [], 
+                               'Channel Current [A]': []})
             while True:
                 line = self.inst.read() # read single line printed from keithly
                 if line.strip().startswith("@@"):
                     data = line.strip()[2:].strip()  # Remove "@@" and extra whitespace
                     print("Realtime:", data)
+                    values = data.split(',')
+                    tmpdf = pd.DataFrame({'Gate Voltage [V]': [values[0]], 
+                               'Channel Current [A]': [values[3]]})
+                    pd.concat([df2, tmpdf], ignore_index=True)
+                    print(df2)
+                    
                 elif line.strip().startswith("EE"): # Terminating characters
                     break
             df = self.readBuffer()
