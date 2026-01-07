@@ -23,7 +23,6 @@ class K2636():
         if platform.system() == "Windows":
             try:
                 rm = visa.ResourceManager() # Pyvisa backend cannot be used, NI-VISA is used instead
-                #self.inst.timeout = 500000 # Backend times out inbetween sweeps, need to fix as it is specific to NI-VISA
             except:
                 raise ConnectionError("Cannot find VISA backend on Windows.")
         else:
@@ -43,7 +42,7 @@ class K2636():
                 self.inst = rm.open_resource(config.ADDRESS)
                 self.inst.read_termination = str(read_term)
                 self.inst.baud_rate = baudrate
-                #self.inst.timeout = 500000
+                self.inst.timeout = 500000
             else:
                 raise ConnectionError("Unsupported address: {}".format(address))
         except:
@@ -84,6 +83,16 @@ class K2636():
         except FileNotFoundError:
             return ('CONNECTION ERROR: No connection established.')
         except AttributeError:
+            print('CONNECTION ERROR: No connection established.')
+            return ('CONNECTION ERROR: No connection established.')
+        
+    def cancelOperation(self):
+        try:
+            self._write("abort")
+            self._write("smua.source.output = smua.OUTPUT_OFF")
+            self._write("smub.source.output = smub.OUTPUT_OFF")
+            self._write("reset()")
+        except:
             print('CONNECTION ERROR: No connection established.')
             return ('CONNECTION ERROR: No connection established.')
 
@@ -153,22 +162,6 @@ class K2636():
         except(FileNotFoundError):
             print('Sample name not found.')
 
-    def Output(self, sample):
-        """K2636 Output sweeps."""
-        try:
-            begin_time = time.time()
-            self.loadTSP('output-charact.tsp')
-            self.runTSP()
-            df = self.readBuffer()
-            output_name = str(sample + '-output.csv')
-            df.to_csv(output_name, sep='\t', index=False)
-            finish_time = time.time()
-            print('Output sweeps complete. Elapsed time %.2f mins.'
-                  % ((finish_time - begin_time) / 60))
-
-        except(AttributeError):
-            print('Cannot perform output sweep: no keithley connected.')
-
     def Transfer(self, sample):
         """K2636 Transfer sweeps."""
         try:
@@ -177,9 +170,10 @@ class K2636():
             self.runTSP()
             while True:
                 line = self.inst.read() # read single line printed from keithly
-                if line[:2] == "@@": # Realtime data sent by keithly
-                    print("Received: " + line)
-                elif line[:2] == "EE": # Terminating characters
+                if line.strip().startswith("@@"):
+                    data = line.strip()[2:].strip()  # Remove "@@" and extra whitespace
+                    print("Realtime:", data)
+                elif line.strip().startswith("EE"): # Terminating characters
                     break
             df = self.readBuffer()
             output_name = str(sample + '-neg-pos-transfer.csv')

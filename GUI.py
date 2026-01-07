@@ -62,8 +62,8 @@ class mainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.dockConsole)
         self.stdout_stream = EmittingStream()
         self.stdout_stream.text_written.connect(self.console.console.append)
-        #sys.stdout = self.stdout_stream
-        #sys.stderr = self.stdout_stream
+        sys.stdout = self.stdout_stream
+        sys.stderr = self.stdout_stream
 
 
         # Matplotlib control widget
@@ -203,6 +203,10 @@ class keithleyButtonWidget(QWidget):
         self.transferBtn = QPushButton('Transfer Sweep')
         grid.addWidget(self.transferBtn, 1, 3)
         self.transferBtn.clicked.connect(self.showSampleNameInput)
+
+        self.cancelBtn = QPushButton('Cancel Operation')
+        grid.addWidget(self.cancelBtn, 2, 3)
+        
 
     def showSampleNameInput(self):
         """Popup for sample name input."""

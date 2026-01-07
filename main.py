@@ -30,6 +30,15 @@ class GUI(GUI.mainWindow):
     def setupConnections(self):
         """Connect the GUI to the measurement thread."""
         self.buttonWidget.transferBtn.clicked.connect(self.transferSweep)
+        self.buttonWidget.cancelBtn.clicked.connect(self.cancelOperation)
+
+    def cancelOperation(self):
+        try:
+            keithley = k2636.K2636()
+            keithley.cancelOperation()
+            print("Cancelled pending operations and reset Keithly!")
+        except:
+            print("Could not cancel pending operations. Check connection.")
 
     def transferSweep(self, event):
         """Perform transfer sweep."""
