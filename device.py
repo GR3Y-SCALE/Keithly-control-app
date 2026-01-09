@@ -168,23 +168,30 @@ class K2636():
             begin_time = time.time()
             self.loadTSP('transfer-charact.tsp')
             self.runTSP()
-            if isinstance(df2, pd.DataFrame):
-                del df2
-            df2 = pd.DataFrame({'Gate Voltage [V]': [], 
-                               'Channel Current [A]': []})
+
+
+            gate_voltages = []
+            channel_currents = []
             while True:
-                line = self.inst.read() # read single line printed from keithly
+                line = self.inst.read()  # read single line printed from keithley
                 if line.strip().startswith("@@"):
                     data = line.strip()[2:].strip()  # Remove "@@" and extra whitespace
                     print("Realtime:", data)
                     values = data.split(',')
-                    tmpdf = pd.DataFrame({'Gate Voltage [V]': [values[0]], 
-                               'Channel Current [A]': [values[3]]})
-                    pd.concat([df2, tmpdf], ignore_index=True)
-                    print(df2)
-                    
-                elif line.strip().startswith("EE"): # Terminating characters
+                    if len(values) >= 4:
+                        gate_voltages.append(float(values[0]))
+                        channel_currents.append(float(values[3]))
+                elif line.strip().startswith("EE"):  # Terminating characters
                     break
+
+            # Optionally print or process the real-time data
+            if gate_voltages and channel_currents:
+                df2 = pd.DataFrame({
+                    'Gate Voltage [V]': gate_voltages,
+                    'Channel Current [A]': channel_currents
+                })
+                print(df2)
+
             df = self.readBuffer()
             output_name = str(sample + '-neg-pos-transfer.csv')
             df.to_csv(output_name, sep='\t', index=False)

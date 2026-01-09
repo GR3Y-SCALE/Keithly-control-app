@@ -6,7 +6,7 @@ Author:  Ross <peregrine dot warren at physics dot ox dot ac dot uk>
 
 """
 
-import k2636  # Driver
+import device  # Driver
 import config # adjustable parameters
 import sys
 import fnmatch
@@ -135,7 +135,7 @@ class mainWindow(QMainWindow):
     def testKeithleyConnection(self):
         """Connect to the keithley on initialisation."""
         try:
-            self.keithley = k2636.K2636(address=config.ADDRESS,
+            self.keithley = device.K2636(address=config.ADDRESS,
                                         read_term='\n', baudrate=57600)
             self.statusbar.showMessage('Keithley found.')
             self.buttonWidget.showButtons()
@@ -207,7 +207,6 @@ class keithleyButtonWidget(QWidget):
         self.cancelBtn = QPushButton('Cancel Operation')
         grid.addWidget(self.cancelBtn, 2, 3)
         
-
     def showSampleNameInput(self):
         """Popup for sample name input."""
         samNam = QInputDialog()
@@ -375,7 +374,7 @@ class keithleyConnectionWindow(QWidget):
     def reconnect2keithley(self):
         """Reconnect to instrument."""
         try:
-            self.keithley = k2636.K2636(address=self.connAddress.text(),
+            self.keithley = device.K2636(address=self.connAddress.text(),
                                         read_term='\n', baudrate=57600)
             self.connStatus.setText('Connection successful')
             self.connectionSig.emit()
@@ -423,7 +422,7 @@ class keithleyErrorWindow(QWidget):
 
     def readError(self):
         """Reconnect to instrument."""
-        self.keithley = k2636.K2636(address='ASRL/dev/ttyUSB0',
+        self.keithley = device.K2636(address='ASRL/dev/ttyUSB0',
                                     read_term='\n', baudrate=57600)
 
         self.keithley._write('errorCode, message, severity, errorNode' +
