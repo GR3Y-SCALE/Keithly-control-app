@@ -262,7 +262,7 @@ class mplWidget(FigureCanvas):
         """Take a data frame and draw it."""
         self.ax1 = self.fig.add_subplot(111)
         self.ax1.semilogy(df['Gate Voltage [V]'],
-                            abs(df['Channel Current [A]']), '.')
+                            abs(df['Channel Current [A]']), '.-')
         self.ax1.set_title('Transfer Curve')
         self.ax1.set_xlabel('Gate Voltage [V]')
         self.ax1.set_ylabel('Channel Current [A]')
