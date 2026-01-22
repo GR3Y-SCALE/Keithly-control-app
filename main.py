@@ -83,7 +83,7 @@ class GUI(GUI.mainWindow):
             except:
                 pass
             self.keithley = None
-        # self.dislpayMeasurement()
+        self.dislpayMeasurement()
         self.buttonWidget.showButtons()
 
     def updateRealTimeDisplay(self, df):
@@ -144,11 +144,10 @@ class measureThread(QThread):
             begin_measure = time.time()
 
             if self.params['Measurement'] == 'transfer':
-                df_callback = lambda df: self.dataUpdateSig.emit(df)
                 keithley.Transfer(
                     self.params['Sample name'],
                     cancel_check=lambda: self._cancel_requested,
-                    data_callback=df_callback
+                    data_callback=lambda df: self.dataUpdateSig.emit(df)
                     )
 
             finish_measure = time.time()
