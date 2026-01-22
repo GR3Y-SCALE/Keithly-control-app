@@ -14,6 +14,11 @@ import platform
 
 import config # Used for parameters
 
+
+class UserCancelledError(Exception):
+    """Exception raised when user cancels measurement."""
+    pass
+
 class K2636():
     """Class for Keithley control."""
 

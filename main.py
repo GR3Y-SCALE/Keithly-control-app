@@ -16,6 +16,7 @@ import time
 import pandas as pd
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QApplication
+from device import UserCancelledError
 
 
 class GUI(GUI.mainWindow):
@@ -127,6 +128,8 @@ class measureThread(QThread):
 
     def run(self):
         """Logic to be run in background thread."""
+        begin_measure = time.time()
+        finish_measure = time.time()
         try:
             # Use the shared keithley instance passed from the GUI
             keithley = self.keithley
@@ -138,19 +141,20 @@ class measureThread(QThread):
                     cancel_check=lambda: self._cancel_requested
                     )
 
-            self.finishedSig.emit()
             finish_measure = time.time()
+            self.finishedSig.emit()
 
-        except:
-            if self._cancel_requested:
-                self.finishedSig.emit()
-            # else:
-            #     self.errorSig.emit(str(e))
+        except UserCancelledError:
+            finish_measure = time.time()
+            self.finishedSig.emit()
+        except Exception as e:
+            finish_measure = time.time()
+            self.errorSig.emit(str(e))
 
         finally:
             pass
 
-        print('-------------------------------------------\nAll measurements complete. Total time % .2f mins.'
+        print('-------------------------------------------\nAll measurements complete. Total time %.2f mins.'
                   % ((finish_measure - begin_measure) / 60))
 
 
