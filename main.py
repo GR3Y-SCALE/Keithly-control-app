@@ -35,6 +35,26 @@ class GUI(GUI.mainWindow):
         self.buttonWidget.transferBtn.clicked.connect(self.transferSweep)
         self.buttonWidget.cancelBtn.clicked.connect(self.cancelOperation)
 
+    def closeEvent(self, event):
+        """Handle window close event - clean up resources."""
+        # Cancel any running measurements
+        if self.measureThread and self.measureThread.isRunning():
+            try:
+                self.measureThread.requestCancel()
+                self.measureThread.wait()  # Wait for thread to finish
+            except:
+                pass
+        
+        # Close instrument connection
+        if self.keithley:
+            try:
+                self.keithley.closeConnection()
+            except:
+                pass
+        
+        # Accept the close event
+        event.accept()
+
     def cancelOperation(self):
         """Cancel any pending instrument functions and request measurement thread to stop."""
         self.statusbar.showMessage('Cancelling...')
