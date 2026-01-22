@@ -167,61 +167,98 @@ class K2636():
         except(FileNotFoundError):
             print('Sample name not found.')
 
+    def _readRealTimeData(self, cancel_check=None, data_callback=None):
+        """
+        Read real-time data from instrument and invoke callback.
+        
+        Args:
+            cancel_check: Callable that returns True if cancellation is requested
+            data_callback: Callable to invoke with DataFrame updates
+            
+        Returns:
+            DataFrame with collected data
+        """
+        gate_voltages = []
+        channel_currents = []
+        
+        while True:
+            # Cancellation handling
+            if cancel_check is not None and cancel_check():
+                print('Cancel operation has been detected -> Aborting measurement')
+                self.cancelOperation()
+                raise UserCancelledError("Measurement cancelled by user")
+
+            line = self.inst.read()  # read single line printed from keithley
+            if line.strip().startswith("@@"):
+                data = line.strip()[2:].strip()  # Remove "@@" and extra whitespace
+                print("Realtime:", data)
+                values = data.split(',')
+                if len(values) >= 4:
+                    gate_voltages.append(float(values[0]))
+                    channel_currents.append(float(values[3]))
+                    
+                    # Emit real-time dataframe if callback provided
+                    if data_callback is not None:
+                        df_realtime = pd.DataFrame({
+                            'Gate Voltage [V]': gate_voltages,
+                            'Channel Current [A]': channel_currents
+                        })
+                        data_callback(df_realtime)
+            elif line.strip().startswith("EE"):  # Terminating characters
+                break
+
+        # Return final dataframe
+        if gate_voltages and channel_currents:
+            df = pd.DataFrame({
+                'Gate Voltage [V]': gate_voltages,
+                'Channel Current [A]': channel_currents
+            })
+            print(df)
+            return df
+        return None
+
+    def _runTSPSweep(self, tsp_script, cancel_check=None, data_callback=None):
+        """
+        Execute a TSP script and collect real-time data.
+        
+        Args:
+            tsp_script: Path to TSP script file to load
+            cancel_check: Callable that returns True if cancellation is requested
+            data_callback: Callable to invoke with DataFrame updates
+            
+        Returns:
+            DataFrame with collected data
+        """
+        self.loadTSP(tsp_script)
+        self.runTSP()
+        return self._readRealTimeData(cancel_check=cancel_check, data_callback=data_callback)
+
     def Transfer(self, sample, cancel_check=False, data_callback=None):
         """K2636 Transfer sweeps."""
         try:
             begin_time = time.time()
-            self.loadTSP('transfer-charact.tsp')
-            self.runTSP()
+            
+            # Forward transfer scan
+            df_forward = self._runTSPSweep(
+                'transfer-charact.tsp',
+                cancel_check=cancel_check,
+                data_callback=data_callback
+            )
+            
+            if df_forward is not None:
+                output_name = str(sample + '-neg-pos-transfer.csv')
+                df_forward.to_csv(output_name, sep='\t', index=False)
 
-
-            gate_voltages = []
-            channel_currents = []
-            while True:
-
-                # Cancellation handling
-                if cancel_check is not None and cancel_check():
-                    print('Cancel operation has been detected -> Aborting transfer sweep')
-                    self.cancelOperation()
-                    raise UserCancelledError("Measurement cancelled by user")
-
-                line = self.inst.read()  # read single line printed from keithley
-                if line.strip().startswith("@@"):
-                    data = line.strip()[2:].strip()  # Remove "@@" and extra whitespace
-                    print("Realtime:", data)
-                    values = data.split(',')
-                    if len(values) >= 4:
-                        gate_voltages.append(float(values[0]))
-                        channel_currents.append(float(values[3]))
-                        
-                        # Emit real-time dataframe if callback provided
-                        if data_callback is not None:
-                            df_realtime = pd.DataFrame({
-                                'Gate Voltage [V]': gate_voltages,
-                                'Channel Current [A]': channel_currents
-                            })
-                            data_callback(df_realtime)
-                elif line.strip().startswith("EE"):  # Terminating characters
-                    break
-
-            # Optionally print or process the real-time data
-            if gate_voltages and channel_currents:
-                df2 = pd.DataFrame({
-                    'Gate Voltage [V]': gate_voltages,
-                    'Channel Current [A]': channel_currents
-                })
-                print(df2)
-
-            df = self.readBuffer()
-            output_name = str(sample + '-neg-pos-transfer.csv')
-            df.to_csv(output_name, sep='\t', index=False)
-
-            # transfer reverse scan
-            self.loadTSP('transfer-charact-2.tsp')
-            self.runTSP()
-            df = self.readBuffer()
-            output_name = str(sample + '-pos-neg-transfer.csv')
-            df.to_csv(output_name, sep='\t', index=False)
+            # Reverse transfer scan
+            df_reverse = self._runTSPSweep(
+                'transfer-charact-2.tsp',
+                cancel_check=cancel_check,
+                data_callback=data_callback
+            )
+            
+            if df_reverse is not None:
+                output_name = str(sample + '-pos-neg-transfer.csv')
+                df_reverse.to_csv(output_name, sep='\t', index=False)
 
             finish_time = time.time()
             print('Transfer curves measured. Elapsed time %.2f mins.'
