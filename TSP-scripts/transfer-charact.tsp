@@ -85,10 +85,10 @@ if VgStart < VgEnd then
     while Vg <= VgEnd do
         smua.source.levelv = Vg
         -- smua.source.output = smua.OUTPUT_ON
-        -- delay(0.05)
+        delay(0.1)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-	    if math.mod(math.floor(Vg + 0.5), 10) == 0 then
+	    if math.mod(math.floor(Vg + 0.5), 5) == 0 then
             print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
         end
         
@@ -102,10 +102,10 @@ elseif VgStart > VgEnd then
     while Vg >= VgEnd do
         smua.source.levelv = Vg
         -- smua.source.output = smua.OUTPUT_ON
-        -- delay(0.05)
+        delay(0.1)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-        if math.mod(math.floor(Vg + 0.5), 10) == 0 then
+        if math.mod(math.floor(Vg + 0.5), 5) == 0 then
             print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
         end
         

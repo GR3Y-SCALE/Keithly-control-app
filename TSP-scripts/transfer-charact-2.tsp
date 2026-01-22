@@ -84,8 +84,12 @@ delay(0.5)
 if VgStart < VgEnd then
     while Vg <= VgEnd do
         smua.source.levelv = Vg
+        delay(0.1)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
+        if math.mod(math.floor(Vg + 0.5), 5) == 0 then
+            print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
+        end
 
         Vg = Vg + VgStep
     end
@@ -94,8 +98,12 @@ if VgStart < VgEnd then
 elseif VgStart > VgEnd then
     while Vg >= VgEnd do
         smua.source.levelv = Vg
+        delay(0.1)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
+        if math.mod(math.floor(Vg + 0.5), 5) == 0 then
+            print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
+        end
         Vg = Vg - VgStep
     end
 
@@ -108,5 +116,5 @@ smua.source.output = smua.OUTPUT_OFF
 waitcomplete()
 
 beeper.beep(1, 600)
-
+print("EE")
 -------- END --------
