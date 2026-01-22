@@ -162,7 +162,7 @@ class K2636():
         except(FileNotFoundError):
             print('Sample name not found.')
 
-    def Transfer(self, sample):
+    def Transfer(self, sample, cancel_check=False):
         """K2636 Transfer sweeps."""
         try:
             begin_time = time.time()
@@ -173,6 +173,13 @@ class K2636():
             gate_voltages = []
             channel_currents = []
             while True:
+
+                # Cancellation handling
+                if cancel_check is not None and cancel_check():
+                    print('Cancel operation has been detected -> Aborting transfer sweep')
+                    self.cancelOperation()
+                    raise UserCancelledError("Measurement cancelled by user")
+
                 line = self.inst.read()  # read single line printed from keithley
                 if line.strip().startswith("@@"):
                     data = line.strip()[2:].strip()  # Remove "@@" and extra whitespace
@@ -207,8 +214,13 @@ class K2636():
             print('Transfer curves measured. Elapsed time %.2f mins.'
                   % ((finish_time - begin_time) / 60))
 
+        except UserCancelledError:
+            raise
         except(AttributeError):
             print('Cannot perform transfer sweep: no keithley connected.')
+
+        finally:
+            pass
 ########################################################################
 
 

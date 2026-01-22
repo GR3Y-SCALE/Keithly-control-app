@@ -36,30 +36,20 @@ class GUI(GUI.mainWindow):
 
     def cancelOperation(self):
         """Cancel any pending instrument functions and request measurement thread to stop."""
-        try:
-            # If a measurement thread is running, request it to cancel. This will call
-            # the same K2636.cancelOperation() used by the thread so the instrument
-            # abort happens on the shared connection.
-            if hasattr(self, 'measureThread') and self.measureThread is not None and self.measureThread.isRunning():
-                self.measureThread.cancel()
-                self.statusbar.showMessage('Cancelling operation...')
-                # Do not block the GUI waiting for the thread here; when the thread exits
-                # it will emit finishedSig and UI will be updated in done().
-                return
-
-            # If no thread is running, try a standalone cancel (best-effort)
-            if self.keithley is None:
-                # create a temporary connection to send abort commands
+        self.statusbar.showMessage('Cancelling...')
+        if self.measureThread and self.measureThread.isRunning():
+            try:
+                self.measureThread.requestCancel()
+            except:
+                pass
+        else:
+            try:
                 temp = device.K2636()
                 temp.cancelOperation()
                 temp.closeConnection()
-                print("Cancelled pending operations and reset Keithly!")
-            else:
-                # If a keithley instance exists on the GUI (not common), use it
-                self.keithley.cancelOperation()
-                print("Cancelled pending operations on shared Keithley instance.")
-        except Exception as e:
-            print("Could not cancel pending operations. Check connection.", e)
+            except:
+                pass
+            self.statusbar.showMessage('No operation to cancel')
 
     def transferSweep(self, event):
         """Perform transfer sweep."""
@@ -83,8 +73,15 @@ class GUI(GUI.mainWindow):
 
     def done(self):
         """Update display when finished measurement."""
-        self.statusbar.showMessage('Measurement(s) complete.')
-        self.dislpayMeasurement()
+        self.statusbar.showMessage('Operations done')
+        if self.measureThread:
+            try:
+                if self.keithley:
+                    self.keithley.closeConnection()
+            except:
+                pass
+            self.keithley = None
+        # self.dislpayMeasurement()
         self.buttonWidget.showButtons()
 
     def error(self, message):
@@ -93,7 +90,7 @@ class GUI(GUI.mainWindow):
         self.statusbar.showMessage('Measurement error!')
         self.buttonWidget.hideButtons()
 
-    def dislpayMeasurement(self):
+    def dislpayMeasurement(self): 
         """Display the data on screen."""
         try:
             # TRANSFER graph display
@@ -111,6 +108,7 @@ class measureThread(QThread):
 
     finishedSig = pyqtSignal()
     errorSig = pyqtSignal(str)
+    progressSig = pyqtSignal(str)
 
     def __init__(self, params, keithley):
         """Initialise thread with params and a shared keithley instance."""
@@ -119,15 +117,9 @@ class measureThread(QThread):
         self.keithley = keithley
         self._cancel_requested = False
 
-    def cancel(self):
+    def requestCancel(self):
         """Request cancellation: tell the instrument to abort and flag the thread."""
         self._cancel_requested = True
-        try:
-            # Use the shared keithley instance to abort any running script on the instrument.
-            if self.keithley is not None:
-                self.keithley.cancelOperation()
-        except Exception:
-            pass
 
     def __del__(self):
         """When thread is deconstructed wait for porcesses to complete."""
@@ -140,30 +132,26 @@ class measureThread(QThread):
             keithley = self.keithley
             begin_measure = time.time()
 
-            if self.params['Measurement'] == 'transfer': # only transfer for now
-                keithley.Transfer(self.params['Sample name'])
-
-            # Close connection when finished (or if Transfer exits due to abort)
-            try:
-                keithley.closeConnection()
-            except Exception:
-                pass
+            if self.params['Measurement'] == 'transfer':
+                keithley.Transfer(
+                    self.params['Sample name'],
+                    cancel_check=lambda: self._cancel_requested
+                    )
 
             self.finishedSig.emit()
             finish_measure = time.time()
-            print('-------------------------------------------\nAll measurements complete. Total time % .2f mins.'
-                  % ((finish_measure - begin_measure) / 60))
 
-        except ConnectionError:
-            self.errorSig.emit('No measurement made. Please retry.')
-            self.quit()
-        except Exception as e:
-            # If the operation was cancelled, emit finished to allow GUI to update.
+        except:
             if self._cancel_requested:
                 self.finishedSig.emit()
-            else:
-                self.errorSig.emit(str(e))
-            self.quit()
+            # else:
+            #     self.errorSig.emit(str(e))
+
+        finally:
+            pass
+
+        print('-------------------------------------------\nAll measurements complete. Total time % .2f mins.'
+                  % ((finish_measure - begin_measure) / 60))
 
 
 if __name__ == '__main__':
