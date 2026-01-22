@@ -167,7 +167,7 @@ class K2636():
         except(FileNotFoundError):
             print('Sample name not found.')
 
-    def Transfer(self, sample, cancel_check=False):
+    def Transfer(self, sample, cancel_check=False, data_callback=None):
         """K2636 Transfer sweeps."""
         try:
             begin_time = time.time()
@@ -193,6 +193,14 @@ class K2636():
                     if len(values) >= 4:
                         gate_voltages.append(float(values[0]))
                         channel_currents.append(float(values[3]))
+                        
+                        # Emit real-time dataframe if callback provided
+                        if data_callback is not None:
+                            df_realtime = pd.DataFrame({
+                                'Gate Voltage [V]': gate_voltages,
+                                'Channel Current [A]': channel_currents
+                            })
+                            data_callback(df_realtime)
                 elif line.strip().startswith("EE"):  # Terminating characters
                     break
 

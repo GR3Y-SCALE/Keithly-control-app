@@ -68,6 +68,7 @@ class GUI(GUI.mainWindow):
             self.measureThread = measureThread(self.params, self.keithley)
             self.measureThread.finishedSig.connect(self.done)
             self.measureThread.errorSig.connect(self.error)
+            self.measureThread.dataUpdateSig.connect(self.updateRealTimeDisplay)
             self.measureThread.start()
         except AttributeError:
             self.popupWarning.showWindow('No sample name given!')
@@ -84,6 +85,12 @@ class GUI(GUI.mainWindow):
             self.keithley = None
         # self.dislpayMeasurement()
         self.buttonWidget.showButtons()
+
+    def updateRealTimeDisplay(self, df):
+        """Update the plot with real-time data."""
+        if df is not None and not df.empty:
+            self.mainWidget.clear()
+            self.mainWidget.drawTransfer(df)
 
     def error(self, message):
         """Raise error warning."""
@@ -110,6 +117,7 @@ class measureThread(QThread):
     finishedSig = pyqtSignal()
     errorSig = pyqtSignal(str)
     progressSig = pyqtSignal(str)
+    dataUpdateSig = pyqtSignal(pd.DataFrame)
 
     def __init__(self, params, keithley):
         """Initialise thread with params and a shared keithley instance."""
@@ -136,9 +144,11 @@ class measureThread(QThread):
             begin_measure = time.time()
 
             if self.params['Measurement'] == 'transfer':
+                df_callback = lambda df: self.dataUpdateSig.emit(df)
                 keithley.Transfer(
                     self.params['Sample name'],
-                    cancel_check=lambda: self._cancel_requested
+                    cancel_check=lambda: self._cancel_requested,
+                    data_callback=df_callback
                     )
 
             finish_measure = time.time()
