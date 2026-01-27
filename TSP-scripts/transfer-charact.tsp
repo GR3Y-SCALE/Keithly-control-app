@@ -6,7 +6,7 @@
 
 
 -------- PARAMETERS --------
-Vds = 0.2
+Vds = 0.5
 
 VgStart = -60
 VgEnd = 60
@@ -37,9 +37,9 @@ smua.measure.count = 1
 
 
 -- smua setup -- Gate control
--- smua.measure.delayfactor = 0.05
+smua.measure.delayfactor = 0.01
 smua.measure.nplc = 5 -- integration time
--- smua.measure.rangei = 1e-8 -- current measurement range
+smua.measure.rangei = 1e-6 -- current measurement range
 smua.measure.autorangei = smua.AUTORANGE_ON
 smua.source.func = smua.OUTPUT_DCVOLTS
 smua.source.limiti = 1e-8
@@ -47,7 +47,7 @@ smua.sense = smua.SENSE_LOCAL
 smua.source.autorangev = smua.AUTORANGE_ON -- auto range for v source
 
 -- smub setup
--- smub.measure.delayfactor = 0.05 -- seconds
+smub.measure.delayfactor = 0.01 -- seconds
 smub.measure.nplc = 5
 smub.source.func = smub.OUTPUT_DCVOLTS
 smub.sense = smub.SENSE_LOCAL
@@ -95,10 +95,11 @@ if VgStart < VgEnd then
         -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg + VgStep
     end
+end
 
 -- Reverse scan
-elseif VgStart > VgEnd then
-    while Vg >= VgEnd do
+if Vg > -VgEnd then
+    while Vg >= -VgEnd do
         smua.source.levelv = Vg
         -- smua.source.output = smua.OUTPUT_ON
         smua.measure.i(smua.nvbuffer1)
@@ -111,8 +112,6 @@ elseif VgStart > VgEnd then
         Vg = Vg - VgStep
     end
 
-else
-    error("Invalid sweep parameters.")
 end
 
 smub.source.output = smub.OUTPUT_OFF
