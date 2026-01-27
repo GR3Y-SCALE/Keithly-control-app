@@ -6,7 +6,7 @@
 
 
 -------- PARAMETERS --------
-Vds = 0.5
+Vds = 0.2
 
 VgStart = -60
 VgEnd = 60
@@ -37,20 +37,20 @@ smua.measure.count = 1
 
 
 -- smua setup -- Gate control
-smua.measure.delayfactor = 0.05
+-- smua.measure.delayfactor = 0.05
 smua.measure.nplc = 5 -- integration time
-smua.measure.rangei = 1e-6 -- current measurement range
+-- smua.measure.rangei = 1e-8 -- current measurement range
 smua.measure.autorangei = smua.AUTORANGE_ON
 smua.source.func = smua.OUTPUT_DCVOLTS
 smua.source.limiti = 1e-8
--- smua.sense = smua.SENSE_LOCAL
+smua.sense = smua.SENSE_LOCAL
 smua.source.autorangev = smua.AUTORANGE_ON -- auto range for v source
 
 -- smub setup
-smub.measure.delayfactor = 0.05 -- seconds
+-- smub.measure.delayfactor = 0.05 -- seconds
 smub.measure.nplc = 5
 smub.source.func = smub.OUTPUT_DCVOLTS
--- smub.sense = smub.SENSE_LOCAL
+smub.sense = smub.SENSE_LOCAL
 smub.source.autorangev = smub.AUTORANGE_ON
 smub.measure.autorangei = smub.AUTORANGE_ON -- auto range for current measuerment
 smub.source.limiti = 1e-5 -- compliance for current
@@ -63,7 +63,7 @@ display.smua.measure.func = display.MEASURE_DCAMPS
 display.screen = display.SMUA_SMUB
 
 -- MEASUREMENT ROUTINE
--- Use tsplink timestamp for consistent timing tracking
+
 smub.source.levelv = Vds -- smub is fixed voltage
 smub.source.output = smub.OUTPUT_ON
 
@@ -78,37 +78,41 @@ while Vg > VgStart do
 end
 
 Vg = VgStart
-delay(0.5) -- wait for things to settle before starting the full sweep
+delay(1) -- wait for things to settle before starting the full sweep
 
 -- Forward Vg scan
-if Vg < VgEnd then
+if VgStart < VgEnd then
     while Vg <= VgEnd do
         smua.source.levelv = Vg
+        -- smua.source.output = smua.OUTPUT_ON
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-        -- Print at 5V intervals without extra delay - use buffered measurements
         if math.mod(math.floor(Vg + 0.5), 5) == 0 then
-            print("@@" .. smua.nvbuffer1[smua.nvbuffer1.n] .. "," .. smub.nvbuffer1[smub.nvbuffer1.n])
+            print("@@" .. smua.nvbuffer1.sourcevalues[smua.nvbuffer1.n] .. "," .. smua.nvbuffer1.readings[smua.nvbuffer1.n] .. "," .. smub.nvbuffer1.sourcevalues[smub.nvbuffer1.n] .. "," .. smub.nvbuffer1.readings[smub.nvbuffer1.n])
         end
         
+
+        -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg + VgStep
     end
-end
 
 -- Reverse scan
-if Vg > -VgEnd then
-    while Vg >= -VgEnd do
+elseif VgStart > VgEnd then
+    while Vg >= VgEnd do
         smua.source.levelv = Vg
+        -- smua.source.output = smua.OUTPUT_ON
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-        -- Print at 5V intervals without extra delay - use buffered measurements
         if math.mod(math.floor(Vg + 0.5), 5) == 0 then
-            print("@@" .. smua.nvbuffer1[smua.nvbuffer1.n] .. "," .. smub.nvbuffer1[smub.nvbuffer1.n])
+            print("@@" .. smua.nvbuffer1.sourcevalues[smua.nvbuffer1.n] .. "," .. smua.nvbuffer1.readings[smua.nvbuffer1.n] .. "," .. smub.nvbuffer1.sourcevalues[smub.nvbuffer1.n] .. "," .. smub.nvbuffer1.readings[smub.nvbuffer1.n])
         end
         
+        -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg - VgStep
     end
 
+else
+    error("Invalid sweep parameters.")
 end
 
 smub.source.output = smub.OUTPUT_OFF
