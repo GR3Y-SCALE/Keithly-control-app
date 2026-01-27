@@ -122,8 +122,8 @@ class GUI(GUI.mainWindow):
         """Display the data on screen."""
         try:
             # TRANSFER graph display
-            if self.params['Measurement'] == 'transfer': #TODO: Add functionality to read both forward and reverse transfer graphs
-                df = pd.read_csv(f"{self.params['Sample name']}-neg-pos-{self.params['Measurement']}.csv", sep='\t')
+            if self.params['Measurement'] == 'transfer':
+                df = pd.read_csv(f"{self.params['Sample name']}-{self.params['Measurement']}.csv", sep='\t')
                 self.mainWidget.clear()
                 self.mainWidget.drawTransfer(df)
 

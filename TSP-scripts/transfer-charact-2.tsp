@@ -39,7 +39,7 @@ smua.measure.count = 1
 -- smua setup -- Gate control
 smua.measure.delayfactor = 0.05
 smua.measure.nplc = 5 -- integration time
--- smua.measure.rangei = 1e-8 -- current measurement range
+smua.measure.rangei = 1e-6 -- current measurement range
 smua.measure.autorangei = smua.AUTORANGE_ON
 smua.source.func = smua.OUTPUT_DCVOLTS
 smua.source.limiti = 1e-8
@@ -70,12 +70,6 @@ smub.source.output = smub.OUTPUT_ON
 -- slow ramp to starting voltage
 smua.source.levelv = 0
 smua.source.output = smua.OUTPUT_ON
-Vg = 0
-while Vg > VgStart do
-    Vg = Vg - 1
-    smua.source.levelv = Vg
-    delay(0.1)
-end
 
 Vg = VgStart
 delay(0.5)
@@ -84,7 +78,6 @@ delay(0.5)
 if VgStart < VgEnd then
     while Vg <= VgEnd do
         smua.source.levelv = Vg
-        delay(0.1)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
         if math.mod(math.floor(Vg + 0.5), 5) == 0 then
@@ -98,7 +91,6 @@ if VgStart < VgEnd then
 elseif VgStart > VgEnd then
     while Vg >= VgEnd do
         smua.source.levelv = Vg
-        delay(0.1)
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
         if math.mod(math.floor(Vg + 0.5), 5) == 0 then

@@ -145,28 +145,6 @@ class K2636():
             print('Cannot read buffer.')
             return  
 
-    def DisplayMeasurement(self, sample):
-        """Show graphs of measurements."""
-        try:
-            style.use('ggplot')
-            fig, ([ax1, ax2], [ax3, ax4]) = plt.subplots(2, 2, figsize=(20, 10),
-                                                         dpi=80, facecolor='w',
-                                                         edgecolor='k')
-
-            df1 = pd.read_csv(str(sample+'-transfer.csv'), '\t')
-            ax1.plot(df1['Gate Voltage [V]'],
-                     df1['Channel Current [A]'], '.')
-            ax1.set_title('Transfer Curves')
-            ax1.set_xlabel('Gate Voltage [V]')
-            ax1.set_ylabel('Channel Current [A]')
-
-            fig.tight_layout()
-            fig.savefig(sample)
-            plt.show()
-
-        except(FileNotFoundError):
-            print('Sample name not found.')
-
     def _readRealTimeData(self, cancel_check=None, data_callback=None):
         """
         Read real-time data from instrument and invoke callback.
@@ -239,26 +217,27 @@ class K2636():
             begin_time = time.time()
             
             # Forward transfer scan
-            df_forward = self._runTSPSweep(
+            self._runTSPSweep(
                 'transfer-charact.tsp',
                 cancel_check=cancel_check,
                 data_callback=data_callback
             )
+            transfer_df = self.readBuffer()
             
-            if df_forward is not None:
-                output_name = str(sample + '-neg-pos-transfer.csv')
-                df_forward.to_csv(output_name, sep='\t', index=False)
+            if transfer_df is not None:
+                output_name = str(sample + '-transfer.csv')
+                transfer_df.to_csv(output_name, sep='\t', index=False)
 
-            # Reverse transfer scan
-            df_reverse = self._runTSPSweep(
-                'transfer-charact-2.tsp',
-                cancel_check=cancel_check,
-                data_callback=data_callback
-            )
+            # # Reverse transfer scan
+            # df_reverse = self._runTSPSweep(
+            #     'transfer-charact-2.tsp',
+            #     cancel_check=cancel_check,
+            #     data_callback=data_callback
+            # )
             
-            if df_reverse is not None:
-                output_name = str(sample + '-pos-neg-transfer.csv')
-                df_reverse.to_csv(output_name, sep='\t', index=False)
+            # if df_reverse is not None:
+            #     output_name = str(sample + '-pos-neg-transfer.csv')
+            #     df_reverse.to_csv(output_name, sep='\t', index=False)
 
             finish_time = time.time()
             print('Transfer curves measured. Elapsed time %.2f mins.'
