@@ -4,9 +4,9 @@
     "Lua.diagnostics.libraryFiles": "Disable",
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
-        "basic": "disable",
-        "builtin": "disable",
-        "table": "disable",
+        "basic": "enable",
+        "builtin": "enable",
+        "table": "enable",
         "bit": "disable",
         "bit32": "disable",
         "coroutine": "disable",
@@ -26,10 +26,10 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "c:\\Users\\Qi_optoelec\\.vscode\\extensions\\tektronix.tsp-toolkit-1.2.3-win32-x64\\node_modules\\@tektronix\\keithley_instrument_libraries\\keithley_instrument_libraries\\tsp-lua-5.0",
-        "c:\\Users\\Qi_optoelec\\.vscode\\extensions\\tektronix.tsp-toolkit-1.2.3-win32-x64\\node_modules\\@tektronix\\keithley_instrument_libraries\\keithley_instrument_libraries\\2450\\Helper",
-        "c:\\Users\\Qi_optoelec\\.vscode\\extensions\\tektronix.tsp-toolkit-1.2.3-win32-x64\\node_modules\\@tektronix\\keithley_instrument_libraries\\keithley_instrument_libraries\\2450\\AllTspCommands",
-        "c:\\Users\\Qi_optoelec\\.vscode\\extensions\\tektronix.tsp-toolkit-1.2.3-win32-x64\\node_modules\\@tektronix\\keithley_instrument_libraries\\keithley_instrument_libraries\\nodes_definitions"
+        "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.4.0-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/tsp-lua-5.0",
+        "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.4.0-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/2450/Helper",
+        "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.4.0-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/2450/AllTspCommands",
+        "/Users/mauriceblake/.vscode/extensions/tektronix.tsp-toolkit-1.4.0-darwin-arm64/node_modules/@tektronix/keithley_instrument_libraries/keithley_instrument_libraries/nodes_definitions"
     ],
     "tsp.tspLinkSystemConfigurations": [
         {

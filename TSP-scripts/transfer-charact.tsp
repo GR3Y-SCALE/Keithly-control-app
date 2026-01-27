@@ -63,7 +63,7 @@ display.smua.measure.func = display.MEASURE_DCAMPS
 display.screen = display.SMUA_SMUB
 
 -- MEASUREMENT ROUTINE
-
+-- Use tsplink timestamp for consistent timing tracking
 smub.source.levelv = Vds -- smub is fixed voltage
 smub.source.output = smub.OUTPUT_ON
 
@@ -84,15 +84,13 @@ delay(0.5) -- wait for things to settle before starting the full sweep
 if Vg < VgEnd then
     while Vg <= VgEnd do
         smua.source.levelv = Vg
-        -- smua.source.output = smua.OUTPUT_ON
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-	    if math.mod(math.floor(Vg + 0.5), 10) == 0 then
-            print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
+        -- Print at 5V intervals without extra delay - use buffered measurements
+        if math.mod(math.floor(Vg + 0.5), 5) == 0 then
+            print("@@" .. smua.nvbuffer1[smua.nvbuffer1.n] .. "," .. smub.nvbuffer1[smub.nvbuffer1.n])
         end
         
-
-        -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg + VgStep
     end
 end
@@ -101,16 +99,13 @@ end
 if Vg > -VgEnd then
     while Vg >= -VgEnd do
         smua.source.levelv = Vg
-        -- smua.source.output = smua.OUTPUT_ON
         smua.measure.i(smua.nvbuffer1)
         smub.measure.i(smub.nvbuffer1)
-        if math.mod(math.floor(Vg + 0.5), 10) == 0 then
-            print("@@" .. smua.measure.v() .. "," .. smua.measure.i() .. "," .. smub.measure.v() .. "," .. smub.measure.i())
+        -- Print at 5V intervals without extra delay - use buffered measurements
+        if math.mod(math.floor(Vg + 0.5), 5) == 0 then
+            print("@@" .. smua.nvbuffer1[smua.nvbuffer1.n] .. "," .. smub.nvbuffer1[smub.nvbuffer1.n])
         end
         
-
-
-        -- smua.source.output = smua.OUTPUT_OFF
         Vg = Vg - VgStep
     end
 
